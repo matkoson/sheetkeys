@@ -1,3 +1,14 @@
+/**
+ * TODO:
+ * 1. 'clear formatting' method -  "Clear formatting⌘\\", menu item
+ * 2. 'named ranges' method
+ * 3. 'find and replace' method
+ * 4. 'zoom' cells method
+ *         const selectorMenuItem = this.clickMenu("Zoom►");
+ * 5. 'engineering' method (??)
+ * 6. 'filtering' method (??)
+ *
+ */
 SheetActions = {
     // NOTE(philc): When developing, you can use this snippet to preview all available menu items:
     // Array.from(document.querySelectorAll(".goog-menuitem")).forEach((i) => console.log(i.innerText))
@@ -19,7 +30,9 @@ SheetActions = {
         moveColumnRight: /Columns? right/,
         paste: "Paste",
         pasteSpecial: "Paste special►",
+        insertCells: "Insert cells►",
         formatOnly: "Format only",
+        andShiftDown: "Insert cells and shift down",
         undo: "Undo",
         redo: "Redo",
         fullScreen: "Full screen",
@@ -393,6 +406,18 @@ SheetActions = {
     pasteSpecial() {
         this.activateMenu(this.menuItems.pasteSpecial);
         this.clickMenu(this.menuItems.formatOnly);
+        this.unselectRow();
+    },
+
+    insertCellsAboveShiftDown() {
+        console.log('at insertCellsAboveShiftDown');
+        // this.activateMenu(this.menuItems.insertCells);
+        // const selectorMenuItem = this.clickMenu("Zoom►");
+        const selectorMenuItem = this.clickMenu("Cells►");
+
+        console.log('selectorMenuItem', selectorMenuItem);
+
+        this.clickMenu(this.menuItems.andShiftDown);
         this.unselectRow();
     },
 

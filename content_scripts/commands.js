@@ -41,6 +41,10 @@ Commands = {
         paste: {fn: SheetActions.paste.bind(SheetActions)},
         pasteSpecial: {fn: SheetActions.pasteSpecial.bind(SheetActions)},
 
+        // insert cells
+        insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
+
+
         // Selection
         enterVisualMode: {fn: UI.enterVisualMode.bind(UI)},
         enterVisualLineMode: {fn: UI.enterVisualLineMode.bind(UI)},
@@ -128,6 +132,9 @@ Commands = {
             "y,c": "copy",
             "p": "paste",
             "s": "pasteSpecial",
+
+            // add cells
+            "<C-o>": "insertCellsAboveShiftDown",
 
             // Selection
             "v": "enterVisualMode",
