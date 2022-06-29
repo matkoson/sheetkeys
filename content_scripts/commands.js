@@ -39,7 +39,13 @@ Commands = {
         // "Yank cell"
         copy: {fn: SheetActions.copy.bind(SheetActions)},
         paste: {fn: SheetActions.paste.bind(SheetActions)},
-        pasteSpecial: {fn: SheetActions.pasteSpecial.bind(SheetActions)},
+
+        // Paste special
+        pasteOnlyStyle: {fn: SheetActions.pasteOnlyStyle.bind(SheetActions)},
+        pasteOnlyWidth: {fn: SheetActions.pasteOnlyWidth.bind(SheetActions)},
+        pasteAllWithoutBorder: {
+            fn: SheetActions.pasteAllWithoutBorder.bind(SheetActions)
+        },
 
         // insert cells
         insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
@@ -131,7 +137,11 @@ Commands = {
             // "Yank cell"
             "y,c": "copy",
             "p": "paste",
-            "s": "pasteSpecial",
+
+            // Paste special
+            "s": "pasteOnlyStyle",
+            "w": "pasteOnlyWidth",
+            "n,b": "pasteAllWithoutBorder",
 
             // add cells
             "<C-o>": "insertCellsAboveShiftDown",
@@ -181,7 +191,8 @@ Commands = {
             "<M-r>": "reloadPage",
             // Don't pass through ESC to the page in normal mode. If you hit ESC in normal mode, nothing should
             // happen. If you mistakenly type it in Sheets, you will exit full screen mode.
-            "esc": "exitMode"
+            "esc": "exitMode",
+            ";,w": "commitCellChanges",
         },
 
         "insert": {

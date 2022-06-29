@@ -32,6 +32,8 @@ SheetActions = {
         pasteSpecial: "Paste special►",
         insertCells: "Insert cells►",
         formatOnly: "Format only",
+        widthOnly: "Column width only",
+        allWithoutBorder: "All except borders",
         andShiftDown: "Insert cells and shift down",
         undo: "Undo",
         redo: "Redo",
@@ -102,8 +104,11 @@ SheetActions = {
     findMenuItem(caption) {
         const menuItems = document.querySelectorAll(".goog-menuitem");
         // debug
-        // const allAvailableMenuItems = Array.from(document.querySelectorAll(".goog-menuitem")).map((i) => i.innerText);
-        // console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems, null, 2))
+        /** const allAvailableMenuItems = Array.from(document.querySelectorAll(".goog-menuitem")).map((i) => i.innerText); */
+        // console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems.filter(el => el.includes("►")), null, 2))
+
+        /** console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems, null, 2)) */
+
 
         const isRegexp = caption instanceof RegExp;
         for (let menuItem of Array.from(menuItems)) {
@@ -403,12 +408,23 @@ SheetActions = {
         this.unselectRow();
     },
 
-    pasteSpecial() {
+    pasteOnlyStyle() {
         this.activateMenu(this.menuItems.pasteSpecial);
         this.clickMenu(this.menuItems.formatOnly);
         this.unselectRow();
     },
 
+    pasteOnlyWidth() {
+        this.activateMenu(this.menuItems.pasteSpecial);
+        this.clickMenu(this.menuItems.widthOnly);
+        this.unselectRow();
+    },
+
+    pasteAllWithoutBorder() {
+        this.activateMenu(this.menuItems.pasteSpecial);
+        this.clickMenu(this.menuItems.allWithoutBorder);
+        this.unselectRow();
+    },
     insertCellsAboveShiftDown() {
         console.log('at insertCellsAboveShiftDown');
         // this.activateMenu(this.menuItems.insertCells);
@@ -549,6 +565,8 @@ SheetActions = {
         // It's not possible to identify and find the specific submenu DOM element that was created and shown as a
         // result of clicking on the menuButton, so we brute force hide all menus.
         const menus = Array.from(document.querySelectorAll(".goog-menu"));
+        /** console.log('MENUS'); */
+        /** console.log('[29-06-2022-12:31:17 CEST] [sheet_actions.js][activateMenu] at line [549]', JSON.stringify({menus}, null, 2)); */
         for (const m of menus)
             m.style.display = "none";
     },
@@ -639,6 +657,25 @@ SheetActions = {
         // After entering full-screen mode, immediately dismiss the notification the Google Docs shows.
         // Note that the DOM element is only available a second after toggling fullscreen.
         setTimeout(() => this.dismissFullScreenNotificationMessage(), 250);
+    },
+
+    clickCloseButtonInDialog() {
+        setTimeout(() => {
+            const closeButtonsInDialog = document.querySelectorAll('[role="dialog"] [aria-label="Close"]');
+            const dialogs = document.querySelectorAll('[role="dialog"]')
+            const ariaClose = document.querySelectorAll('[aria-label="Close"]');
+            for (let button of closeButtonsInDialog) {
+                KeyboardUtils.simulateClick(button);
+            }
+
+        }, 10)
+    },
+
+    clickApplyButton() {
+        const applyButton = document.querySelector('[class="goog-inline-block jfk-button jfk-button-action nfd-apply"][role="button"]');
+        console.log('[29-06-2022-03:19:59 CEST] [sheet_actions.js][clickApplyButton] at line [701]', JSON.stringify({applyButton}, null, 2));
+
+        KeyboardUtils.simulateClick(applyButton);
     },
 
     dismissFullScreenNotificationMessage() {
