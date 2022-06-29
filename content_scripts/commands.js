@@ -47,6 +47,21 @@ Commands = {
             fn: SheetActions.pasteAllWithoutBorder.bind(SheetActions)
         },
 
+        // Format number to currency
+        formatNumberToPln: {
+            fn: SheetActions.formatNumberToPln.bind(SheetActions)
+        },
+        formatNumberToEur: {
+            fn: SheetActions.formatNumberToEur.bind(SheetActions)
+        },
+        formatNumberToUsd: {
+            fn: SheetActions.formatNumberToUsd.bind(SheetActions)
+        },
+        formatNumberToChf: {
+            fn: SheetActions.formatNumberToChf.bind(SheetActions)
+        },
+
+
         // insert cells
         insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
 
@@ -142,6 +157,13 @@ Commands = {
             "s": "pasteOnlyStyle",
             "w": "pasteOnlyWidth",
             "n,b": "pasteAllWithoutBorder",
+
+            // Format number to currency
+            ";,p,l": "formatNumberToPln",
+            ";,e,u": "formatNumberToEur",
+            ";,u,s": "formatNumberToUsd",
+            ";,c,h": "formatNumberToChf"
+            ,
 
             // add cells
             "<C-o>": "insertCellsAboveShiftDown",

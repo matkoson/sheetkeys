@@ -425,6 +425,69 @@ SheetActions = {
         this.clickMenu(this.menuItems.allWithoutBorder);
         this.unselectRow();
     },
+
+    formatNumberToPln() {
+        const menuName = 'Number'
+        this.activateMenu(`${menuName}►`);
+        this.activateMenu("Custom currency");
+
+        setTimeout(() => {
+                const currencyTarget = "Polish Zloty";
+                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
+                KeyboardUtils.simulateClick(currencyOption);
+                this.clickApplyButton()
+                this.unselectRow();
+            }, 500
+        )
+    },
+
+    formatNumberToEur() {
+        const menuName = 'Number'
+        this.activateMenu(`${menuName}►`);
+        this.activateMenu("Custom currency");
+
+        setTimeout(() => {
+                const currencyTarget = "Euro";
+                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
+                KeyboardUtils.simulateClick(currencyOption);
+                this.clickApplyButton()
+                this.unselectRow();
+            }, 500
+        )
+    },
+
+    formatNumberToUsd() {
+        const menuName = 'Number'
+        this.activateMenu(`${menuName}►`);
+        this.activateMenu("Custom currency");
+
+        setTimeout(() => {
+                const currencyTarget = "US Dollar";
+                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
+                KeyboardUtils.simulateClick(currencyOption);
+                this.clickApplyButton()
+                this.unselectRow();
+            }, 500
+        )
+    },
+
+    formatNumberToChf() {
+        const menuName = 'Number'
+        this.activateMenu(`${menuName}►`);
+        this.activateMenu("Custom currency");
+
+        setTimeout(() => {
+                const currencyTarget = "Swiss Franc";
+                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
+                KeyboardUtils.simulateClick(currencyOption);
+                this.clickApplyButton()
+                this.unselectRow();
+            }, 500
+        )
+    },
+
+
+
     insertCellsAboveShiftDown() {
         console.log('at insertCellsAboveShiftDown');
         // this.activateMenu(this.menuItems.insertCells);
@@ -662,8 +725,6 @@ SheetActions = {
     clickCloseButtonInDialog() {
         setTimeout(() => {
             const closeButtonsInDialog = document.querySelectorAll('[role="dialog"] [aria-label="Close"]');
-            const dialogs = document.querySelectorAll('[role="dialog"]')
-            const ariaClose = document.querySelectorAll('[aria-label="Close"]');
             for (let button of closeButtonsInDialog) {
                 KeyboardUtils.simulateClick(button);
             }
