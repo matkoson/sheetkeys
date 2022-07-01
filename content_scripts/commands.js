@@ -40,6 +40,9 @@ Commands = {
         copy: {fn: SheetActions.copy.bind(SheetActions)},
         paste: {fn: SheetActions.paste.bind(SheetActions)},
 
+
+        // CUSTOM -----------------------------------------------------------------------------------------------------
+
         // Paste special
         pasteOnlyStyle: {fn: SheetActions.pasteOnlyStyle.bind(SheetActions)},
         pasteOnlyWidth: {fn: SheetActions.pasteOnlyWidth.bind(SheetActions)},
@@ -64,6 +67,8 @@ Commands = {
 
         // insert cells
         insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
+
+        // CUSTOM -----------------------------------------------------------------------------------------------------
 
 
         // Selection

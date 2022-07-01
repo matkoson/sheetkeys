@@ -1,5 +1,9 @@
 /**
  * TODO:
+ * O. Wrapping functions: format => overflow/wrap/clip/
+ * 0. Add 'del cell up' and 'del cell left' methods
+ * 0. Add 'clear all stying' method
+ * 0. Add 'border' methods
  * 1. 'clear formatting' method -  "Clear formatting⌘\\", menu item
  * 2. 'named ranges' method
  * 3. 'find and replace' method
@@ -13,8 +17,7 @@ SheetActions = {
     // NOTE(philc): When developing, you can use this snippet to preview all available menu items:
     // Array.from(document.querySelectorAll(".goog-menuitem")).forEach((i) => console.log(i.innerText))
     menuItems: {
-        copy: "Copy",
-        // This string with a space at the end is meant to match the button "Row X(D)" where X is some number.
+        copy: "Copy", // This string with a space at the end is meant to match the button "Row X(D)" where X is some number.
         // When multiple rows are selected, the capture is "Rows X(D)".
         deleteRow: /^Row[s]? \d+\(D\)/,
         deleteColumn: /^Column[s]? (?!stats)/, // Avoid matching the menu item "Column stats".
@@ -115,11 +118,9 @@ SheetActions = {
             const label = menuItem.innerText;
             if (!label) continue;
             if (isRegexp) {
-                if (caption.test(label))
-                    return menuItem;
+                if (caption.test(label)) return menuItem;
             } else {
-                if (label.indexOf(caption) === 0)
-                    return menuItem;
+                if (label.indexOf(caption) === 0) return menuItem;
             }
         }
         return null;
@@ -131,8 +132,7 @@ SheetActions = {
     getColorButton(color, type) {
         // First we must open the palette; only then can we reliably get the color button that pertains to that
         // color palette.
-        const paletteButton = document.querySelector(
-            (type == "cell") ? "*[aria-label='Fill color']" : "*[aria-label='Text color']");
+        const paletteButton = document.querySelector((type == "cell") ? "*[aria-label='Fill color']" : "*[aria-label='Text color']");
         KeyboardUtils.simulateClick(paletteButton);
 
         const rect = paletteButton.getBoundingClientRect();
@@ -155,8 +155,7 @@ SheetActions = {
 
     changeFontColor(color) {
         KeyboardUtils.simulateClick(this.getColorButton(color, "font"));
-    },
-    changeCellColor(color) {
+    }, changeCellColor(color) {
         KeyboardUtils.simulateClick(this.getColorButton(color, "cell"));
     },
 
@@ -166,10 +165,7 @@ SheetActions = {
 
     deleteRowsOrColumns() {
         this.activateMenu("Delete►");
-        if (UI.mode == "visualColumn")
-            this.clickMenu(this.menuItems.deleteColumn);
-        else
-            this.clickMenu(this.menuItems.deleteRow);
+        if (UI.mode == "visualColumn") this.clickMenu(this.menuItems.deleteColumn); else this.clickMenu(this.menuItems.deleteRow);
 
         // Clear any row-level selections we might've had.
         this.unselectRow();
@@ -245,27 +241,21 @@ SheetActions = {
     //
     moveUp() {
         UI.typeKey(KeyboardUtils.keyCodes.upArrow);
-    },
-    moveDown() {
+    }, moveDown() {
         UI.typeKey(KeyboardUtils.keyCodes.downArrow);
-    },
-    moveLeft() {
+    }, moveLeft() {
         UI.typeKey(KeyboardUtils.keyCodes.leftArrow);
-    },
-    moveRight() {
+    }, moveRight() {
         UI.typeKey(KeyboardUtils.keyCodes.rightArrow);
     },
 
     moveDownAndSelect() {
         UI.typeKey(KeyboardUtils.keyCodes.downArrow, {shift: true});
-    },
-    moveUpAndSelect() {
+    }, moveUpAndSelect() {
         UI.typeKey(KeyboardUtils.keyCodes.upArrow, {shift: true});
-    },
-    moveLeftAndSelect() {
+    }, moveLeftAndSelect() {
         UI.typeKey(KeyboardUtils.keyCodes.leftArrow, {shift: true});
-    },
-    moveRightAndSelect() {
+    }, moveRightAndSelect() {
         UI.typeKey(KeyboardUtils.keyCodes.rightArrow, {shift: true});
     },
 
@@ -316,8 +306,7 @@ SheetActions = {
     //
     undo() {
         this.clickMenu(this.menuItems.undo);
-    },
-    redo() {
+    }, redo() {
         this.clickMenu(this.menuItems.redo);
     },
 
@@ -408,86 +397,34 @@ SheetActions = {
         this.unselectRow();
     },
 
+    // CUSTOM -----------------------------------------------------------------------------------------------------
+
     pasteOnlyStyle() {
         this.activateMenu(this.menuItems.pasteSpecial);
         this.clickMenu(this.menuItems.formatOnly);
         this.unselectRow();
-    },
-
-    pasteOnlyWidth() {
+    }, pasteOnlyWidth() {
         this.activateMenu(this.menuItems.pasteSpecial);
         this.clickMenu(this.menuItems.widthOnly);
         this.unselectRow();
-    },
-
-    pasteAllWithoutBorder() {
+    }, pasteAllWithoutBorder() {
         this.activateMenu(this.menuItems.pasteSpecial);
         this.clickMenu(this.menuItems.allWithoutBorder);
         this.unselectRow();
     },
 
+    // format to currency, needs currency named from 'format => custom currency' menu
     formatNumberToPln() {
-        const menuName = 'Number'
-        this.activateMenu(`${menuName}►`);
-        this.activateMenu("Custom currency");
-
-        setTimeout(() => {
-                const currencyTarget = "Polish Zloty";
-                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
-                KeyboardUtils.simulateClick(currencyOption);
-                this.clickApplyButton()
-                this.unselectRow();
-            }, 500
-        )
+        utils.formatToCurrency("Polish Zloty")
+    }, formatNumberToEur() {
+        utils.formatToCurrency("Euro")
+    }, formatNumberToUsd() {
+        utils.formatToCurrency("US Dollar");
+    }, formatNumberToChf() {
+        utils.formatToCurrency("Swiss Franc");
     },
 
-    formatNumberToEur() {
-        const menuName = 'Number'
-        this.activateMenu(`${menuName}►`);
-        this.activateMenu("Custom currency");
-
-        setTimeout(() => {
-                const currencyTarget = "Euro";
-                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
-                KeyboardUtils.simulateClick(currencyOption);
-                this.clickApplyButton()
-                this.unselectRow();
-            }, 500
-        )
-    },
-
-    formatNumberToUsd() {
-        const menuName = 'Number'
-        this.activateMenu(`${menuName}►`);
-        this.activateMenu("Custom currency");
-
-        setTimeout(() => {
-                const currencyTarget = "US Dollar";
-                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
-                KeyboardUtils.simulateClick(currencyOption);
-                this.clickApplyButton()
-                this.unselectRow();
-            }, 500
-        )
-    },
-
-    formatNumberToChf() {
-        const menuName = 'Number'
-        this.activateMenu(`${menuName}►`);
-        this.activateMenu("Custom currency");
-
-        setTimeout(() => {
-                const currencyTarget = "Swiss Franc";
-                const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
-                KeyboardUtils.simulateClick(currencyOption);
-                this.clickApplyButton()
-                this.unselectRow();
-            }, 500
-        )
-    },
-
-
-
+    // insert cells for selection
     insertCellsAboveShiftDown() {
         console.log('at insertCellsAboveShiftDown');
         // this.activateMenu(this.menuItems.insertCells);
@@ -500,17 +437,16 @@ SheetActions = {
         this.unselectRow();
     },
 
+    // CUSTOM -----------------------------------------------------------------------------------------------------
+
     // Merging cells
     mergeAllCells() {
         this.clickMenu(this.menuItems.mergeAll);
-    },
-    mergeCellsHorizontally() {
+    }, mergeCellsHorizontally() {
         this.clickMenu(this.menuItems.mergeHorizontally);
-    },
-    mergeCellsVertically() {
+    }, mergeCellsVertically() {
         this.clickMenu(this.menuItems.mergeVertically);
-    },
-    unmergeCells() {
+    }, unmergeCells() {
         this.clickMenu(this.menuItems.unmerge);
     },
 
@@ -560,8 +496,7 @@ SheetActions = {
     //
     getTabEls() {
         return document.querySelectorAll(".docs-sheet-tab");
-    },
-    getActiveTabIndex() {
+    }, getActiveTabIndex() {
         const iterable = this.getTabEls();
         for (let i = 0; i < iterable.length; i++) {
             const tab = iterable[i];
@@ -574,8 +509,7 @@ SheetActions = {
 
     moveTabRight() {
         this.clickTabButton("Move right");
-    },
-    moveTabLeft() {
+    }, moveTabLeft() {
         this.clickTabButton("Move left");
     },
 
@@ -630,8 +564,7 @@ SheetActions = {
         const menus = Array.from(document.querySelectorAll(".goog-menu"));
         /** console.log('MENUS'); */
         /** console.log('[29-06-2022-12:31:17 CEST] [sheet_actions.js][activateMenu] at line [549]', JSON.stringify({menus}, null, 2)); */
-        for (const m of menus)
-            m.style.display = "none";
+        for (const m of menus) m.style.display = "none";
     },
 
     // Shows and then hides the tab menu for the currently selected tab.
@@ -666,38 +599,27 @@ SheetActions = {
 
     wrap() {
         this.clickToolbarButton(this.buttons.wrap);
-    },
-    overflow() {
+    }, overflow() {
         this.clickToolbarButton(this.buttons.overflow);
-    },
-    clip() {
+    }, clip() {
         this.clickToolbarButton(this.buttons.clip);
-    },
-    alignLeft() {
+    }, alignLeft() {
         this.clickToolbarButton(this.buttons.left);
-    },
-    alignCenter() {
+    }, alignCenter() {
         this.clickToolbarButton(this.buttons.center);
-    },
-    alignRight() {
+    }, alignRight() {
         this.clickToolbarButton(this.buttons.right);
-    },
-    colorCellWhite() {
+    }, colorCellWhite() {
         this.changeCellColor(this.colors.white);
-    },
-    colorCellLightYellow3() {
+    }, colorCellLightYellow3() {
         this.changeCellColor(this.colors.lightYellow3);
-    },
-    colorCellLightCornflowerBlue3() {
+    }, colorCellLightCornflowerBlue3() {
         this.changeCellColor(this.colors.lightCornflowBlue3);
-    },
-    colorCellLightPurple() {
+    }, colorCellLightPurple() {
         this.changeCellColor(this.colors.lightPurple3);
-    },
-    colorCellLightRed3() {
+    }, colorCellLightRed3() {
         this.changeCellColor(this.colors.lightRed3);
-    },
-    colorCellLightGray2() {
+    }, colorCellLightGray2() {
         this.changeCellColor(this.colors.lightGray2);
     },
 
@@ -744,8 +666,7 @@ SheetActions = {
         // Another reasonable behavior is to click on none of them, since one of these buttons is likely for a
         // notification that's not the fullscreen dismiss button.
         const dismissButtons = document.querySelectorAll(".docs-butterbar-dismiss");
-        for (let button of dismissButtons)
-            KeyboardUtils.simulateClick(button);
+        for (let button of dismissButtons) KeyboardUtils.simulateClick(button);
     },
 
     // Returns the value of the current cell.
