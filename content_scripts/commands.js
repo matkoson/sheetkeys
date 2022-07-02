@@ -81,6 +81,18 @@ Commands = {
         deleteNotes: {fn: SheetActions.delete().notes.bind(SheetActions)},
         deleteFormatting: {fn: SheetActions.delete().formatting.bind(SheetActions)},
 
+        // border
+        borderClear: {fn: SheetActions.borders().clear.bind(SheetActions)},
+        borderAll: {fn: SheetActions.borders().all.bind(SheetActions)},
+        borderInner: {fn: SheetActions.borders().inner.bind(SheetActions)},
+        borderHorizontal: {fn: SheetActions.borders().horizontal.bind(SheetActions)},
+        borderVertical: {fn: SheetActions.borders().vertical.bind(SheetActions)},
+        borderOuter: {fn: SheetActions.borders().outer.bind(SheetActions)},
+        borderLeft: {fn: SheetActions.borders().left.bind(SheetActions)},
+        borderTop: {fn: SheetActions.borders().top.bind(SheetActions)},
+        borderRight: {fn: SheetActions.borders().right.bind(SheetActions)},
+        borderBottom: {fn: SheetActions.borders().bottom.bind(SheetActions)},
+
         // get named ranges
         getNamedRanges: {fn: SheetActions.getNamedRanges.bind(SheetActions)},
 
@@ -156,10 +168,7 @@ Commands = {
             "r": "replaceChar",
             "o": "openRowBelow",
             "O": "openRowAbove",
-            // "s": "insertRowBelow",
-            // "S": "insertRowAbove",
             "d,d": "deleteRowsOrColumns",
-            // "x": "clear",
             "c,c": "changeCell",
             "y,y": "copyRow",
 
@@ -172,6 +181,18 @@ Commands = {
             // "Yank cell"
             "y,c": "copy",
             "p": "paste",
+
+            // border
+            ";,b,c": "borderClear",
+            ";,b,a": "borderAll",
+            ";,b,i": "borderInner",
+            ";,b,h": "borderHorizontal",
+            ";,b,v": "borderVertical",
+            ";,b,o": "borderOuter",
+            ";,b,l": "borderLeft",
+            ";,b,t": "borderTop",
+            ";,b,r": "borderRight",
+            ";,b,b": "borderBottom",
 
             // CUSTOM -----------------------------------------------------------------------------------------------------
 

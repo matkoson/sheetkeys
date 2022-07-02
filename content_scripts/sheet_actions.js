@@ -434,6 +434,94 @@ SheetActions = {
             values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes, formatting
         }
     },
+    borders() {
+        const _forceHideAllMenus = () => {
+            const menus = Array.from(document.querySelectorAll(".goog-menu"));
+            for (const m of menus) m.style.display = "none";
+        }
+
+        const _pressBordersIcon = () => {
+            setTimeout(() => this.closePopupDialog(), 10
+            )
+            const bordersIcon = document.querySelector("[data-tooltip='Borders']");
+            KeyboardUtils.simulateClick(bordersIcon)
+        }
+        // clear borders
+        const clear = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Clear borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+
+        // all borders
+        const all = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='All borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // inner borders
+        const inner = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Inner borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // horizontal borders
+        const horizontal = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Horizontal borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // vertical
+        const vertical = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Vertical borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // outer borders
+        const outer = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Outer borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // left border
+        const left = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Left border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // top border
+        const top = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Top border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // right border
+        const right = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Right border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // bottom border
+        const bottom = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Bottom border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+
+        return {
+            clear, all, inner, horizontal, vertical, outer, left, top, right, bottom
+        }
+    },
     getNamedRanges() {
         this.activateMenu("Named ranges");
     }
