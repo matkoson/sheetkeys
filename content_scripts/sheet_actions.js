@@ -412,17 +412,28 @@ SheetActions = {
         this.clickMenu(this.menuItems.allWithoutBorder);
         this.unselectRow();
     },
+    formatNumberToCurrency() {
+        const that = this;
+        const formatToCurrency = CustomUtils.makeFormatToCurrency(that);
+        const formatNumberToPln = () => formatToCurrency("Polish Zloty");
+        const formatNumberToEur = () => formatToCurrency("Euro");
+        const formatNumberToUsd = () => formatToCurrency("US Dollar");
+        const formatNumberToChf = () => formatToCurrency("Swiss Franc");
 
-    // format to currency, needs currency named from 'format => custom currency' menu
-    formatNumberToPln() {
-        utils.formatToCurrency("Polish Zloty")
-    }, formatNumberToEur() {
-        utils.formatToCurrency("Euro")
-    }, formatNumberToUsd() {
-        utils.formatToCurrency("US Dollar");
-    }, formatNumberToChf() {
-        utils.formatToCurrency("Swiss Franc");
+        return {
+            formatNumberToPln, formatNumberToEur, formatNumberToUsd, formatNumberToChf
+        }
     },
+    // format to currency, needs currency named from 'format => custom currency' menu
+    // formatNumberToPln() {
+    //     CustomUtils.formatToCurrency("Polish Zloty")
+    // }, formatNumberToEur() {
+    //     CustomUtils.formatToCurrency("Euro")
+    // }, formatNumberToUsd() {
+    //     CustomUtils.formatToCurrency("US Dollar");
+    // }, formatNumberToChf() {
+    //     CustomUtils.formatToCurrency("Swiss Franc");
+    // },
 
     // insert cells for selection
     insertCellsAboveShiftDown() {

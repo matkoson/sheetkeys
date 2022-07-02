@@ -1,14 +1,14 @@
-window.utils = {
-    formatToCurrency: function(currencyTarget) {
+window.CustomUtils = {
+    makeFormatToCurrency: that => currencyTarget => {
         const menuName = 'Number'
-        this.activateMenu(`${menuName}►`);
-        this.activateMenu("Custom currency");
+        that.activateMenu(`${menuName}►`);
+        that.activateMenu("Custom currency");
 
         setTimeout(() => {
                 const currencyOption = Array.from(document.querySelectorAll('[class="nfd-format-display"]')).filter(el => el.textContent === currencyTarget).map(el => el.parentElement)[0];
                 KeyboardUtils.simulateClick(currencyOption);
-                this.clickApplyButton()
-                this.unselectRow();
+                that.clickApplyButton()
+                that.unselectRow();
             }, 500
         )
 

@@ -8,15 +8,23 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://docs.google.com/spreadsheets/*",
-                  "https://docs.google.com/a*/spreadsheets/*"],
-      "js": ["content_scripts/keyboard_utils.js",
-             "content_scripts/settings.js",
-             "content_scripts/sheet_actions.js",
-             "content_scripts/ui.js",
-             "content_scripts/commands.js"],
+      "matches": [
+        "https://docs.google.com/spreadsheets/*",
+        "https://docs.google.com/a*/spreadsheets/*"
+      ],
+      "js": [
+        "content_scripts/custom_utils.js",
+        "content_scripts/keyboard_utils.js",
+        "content_scripts/settings.js",
+        "content_scripts/sheet_actions.js",
+        "content_scripts/ui.js",
+        "content_scripts/commands.js"
+      ],
       "run_at": "document_end",
       "all_frames": false
-    }],
-  "web_accessible_resources": ["page_scripts/page_script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    "page_scripts/page_script.js"
+  ]
 }

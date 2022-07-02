@@ -52,18 +52,17 @@ Commands = {
 
         // Format number to currency
         formatNumberToPln: {
-            fn: SheetActions.formatNumberToPln.bind(SheetActions)
+            fn: SheetActions.formatNumberToCurrency().formatNumberToPln.bind(SheetActions)
         },
         formatNumberToEur: {
-            fn: SheetActions.formatNumberToEur.bind(SheetActions)
+            fn: SheetActions.formatNumberToCurrency().formatNumberToEur.bind(SheetActions)
         },
         formatNumberToUsd: {
-            fn: SheetActions.formatNumberToUsd.bind(SheetActions)
+            fn: SheetActions.formatNumberToCurrency().formatNumberToUsd.bind(SheetActions)
         },
         formatNumberToChf: {
-            fn: SheetActions.formatNumberToChf.bind(SheetActions)
+            fn: SheetActions.formatNumberToCurrency().formatNumberToChf.bind(SheetActions)
         },
-
 
         // insert cells
         insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
