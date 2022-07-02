@@ -72,6 +72,21 @@ Commands = {
         alignCenter: {fn: SheetActions.align().center.bind(SheetActions)},
         alignRight: {fn: SheetActions.align().right.bind(SheetActions)},
 
+        // Delete values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes
+        deleteValues: {fn: SheetActions.delete().values.bind(SheetActions)},
+        deleteRow: {fn: SheetActions.delete().row.bind(SheetActions)},
+        deleteColumn: {fn: SheetActions.delete().column.bind(SheetActions)},
+        deleteCellsAndShiftUp: {fn: SheetActions.delete().cellsAndShiftUp.bind(SheetActions)},
+        deleteCellsAndShiftLeft: {fn: SheetActions.delete().cellsAndShiftLeft.bind(SheetActions)},
+        deleteNotes: {fn: SheetActions.delete().notes.bind(SheetActions)},
+        deleteFormatting: {fn: SheetActions.delete().formatting.bind(SheetActions)},
+
+        // get named ranges
+        getNamedRanges: {fn: SheetActions.getNamedRanges.bind(SheetActions)},
+
+        // close popup or dialog
+        closePopupDialog: {fn: SheetActions.closePopupDialog.bind(SheetActions)},
+
         // CUSTOM -----------------------------------------------------------------------------------------------------
 
         // Selection
@@ -144,7 +159,7 @@ Commands = {
             // "s": "insertRowBelow",
             // "S": "insertRowAbove",
             "d,d": "deleteRowsOrColumns",
-            "x": "clear",
+            // "x": "clear",
             "c,c": "changeCell",
             "y,y": "copyRow",
 
@@ -158,6 +173,8 @@ Commands = {
             "y,c": "copy",
             "p": "paste",
 
+            // CUSTOM -----------------------------------------------------------------------------------------------------
+
             // Paste special
             "s": "pasteOnlyStyle",
             "w": "pasteOnlyWidth",
@@ -170,8 +187,23 @@ Commands = {
             ";,c,h": "formatNumberToChf"
             ,
 
+            // Delete cells
+            "x": "deleteValues",
+            ";,x,r": "deleteRow",
+            ";,x,c": "deleteColumn",
+            ";,x,u": "deleteCellsAndShiftUp",
+            ";,x,l": "deleteCellsAndShiftLeft",
+            ";,x,n": "deleteNotes",
+            ";,x,f": "deleteFormatting",
+
             // add cells
             "<C-o>": "insertCellsAboveShiftDown",
+
+            // Get named ranges
+            ";,n,r": "getNamedRanges",
+            // close popup or dialog
+            ";,z,e": "closePopupDialog",
+            // CUSTOM -----------------------------------------------------------------------------------------------------
 
             // Selection
             "v": "enterVisualMode",

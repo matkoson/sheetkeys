@@ -43,7 +43,8 @@ SheetActions = {
         mergeAll: "Merge all",
         mergeHorizontally: "Merge horizontally",
         mergeVertically: "Merge vertically",
-        unmerge: "Unmerge"
+        unmerge: "Unmerge",
+        delete: "Delete►"
     },
     buttons: {
         // Alignment
@@ -86,13 +87,13 @@ SheetActions = {
             silenceWarning = false;
         }
         // debug
-        const menuItemElements = this.menuItemElements;
-        const that = this;
-        console.log('[02-07-2022-09:07:16 CEST] [sheet_actions.js][getMenuItem] at line [89]', JSON.stringify({
-            menuItemElements,
-            caption,
-            that
-        }, null, 2));
+        // const menuItemElements = this.menuItemElements;
+        // const that = this;
+        // console.log('[02-07-2022-09:07:16 CEST] [clickMenusheet_actions.js][getMenuItem] at line [89]', JSON.stringify({
+        //     menuItemElements,
+        //     caption,
+        //     that
+        // }, null, 2));
         let item = this.menuItemElements[caption];
         if (item) {
             return item;
@@ -112,7 +113,7 @@ SheetActions = {
         const allAvailableMenuItems = Array.from(document.querySelectorAll(".goog-menuitem")).map((i) => i.innerText);
         // console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems.filter(el => el.includes("►")), null, 2))
 
-        /** console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems, null, 2)) */
+        console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems, null, 2));
 
 
         const isRegexp = caption instanceof RegExp;
@@ -367,6 +368,7 @@ SheetActions = {
         this.unselectRow();
     },
     // CUSTOM -----------------------------------------------------------------------------------------------------
+    // pasting
     pasteOnlyStyle() {
         this.activateMenu(this.menuItems.pasteSpecial);
         this.clickMenu(this.menuItems.formatOnly);
@@ -380,6 +382,13 @@ SheetActions = {
         this.clickMenu(this.menuItems.allWithoutBorder);
         this.unselectRow();
     },
+    // insert cells for selection
+    insertCellsAboveShiftDown() {
+        this.clickMenu(this.menuItems.cells);
+        this.clickMenu(this.menuItems.andShiftDown);
+        this.unselectRow();
+    },
+    // FACTORY -----------------------------------------------------------------------------------------------------
     // Format number to currency
     formatNumberToCurrency() {
         const that = this;
@@ -393,12 +402,6 @@ SheetActions = {
             formatNumberToPln: toPln, formatNumberToEur: toEur, formatNumberToUsd: toUsd, formatNumberToChf: toChf
         }
     },
-    // insert cells for selection
-    insertCellsAboveShiftDown() {
-        this.clickMenu(this.menuItems.cells);
-        this.clickMenu(this.menuItems.andShiftDown);
-        this.unselectRow();
-    },
     // Alignment
     align() {
         const that = this;
@@ -411,57 +414,99 @@ SheetActions = {
             left, center, right
         }
     },
-    // CUSTOM -----------------------------------------------------------------------------------------------------
-    // Merging cells
+    // Delete cells
+    delete() {
+        const that = this;
+        const del = CustomUtils.makeDel(that);
+        const delRegex = CustomUtils.makeDelRegex(that);
+
+        const values = () => del("Values v");
+        const row = () => delRegex('[aria-label^="Row "][aria-label$=" d"]');
+        const column = () => delRegex('[aria-label^="Column "][aria-label$=" e"]');
+        const cellsAndShiftUp = () => del("Cells and shift up y");
+        const cellsAndShiftLeft = () => del("Cells and shift left z");
+        const notes = () => del("Notes l");
+        const formatting = () => {
+            this.activateMenu("Clear formatting⌘\\");
+        }
+
+        return {
+            values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes, formatting
+        }
+    },
+    getNamedRanges() {
+        this.activateMenu("Named ranges");
+    }
+    ,
+    closePopupDialog() {
+        this.clickCloseButtonInDialog()
+    },
+// CUSTOM -----------------------------------------------------------------------------------------------------
+// Merging cells
     mergeAllCells() {
         this.clickMenu(this.menuItems.mergeAll);
-    }, mergeCellsHorizontally() {
+    }
+    ,
+    mergeCellsHorizontally() {
         this.clickMenu(this.menuItems.mergeHorizontally);
-    }, mergeCellsVertically() {
+    }
+    ,
+    mergeCellsVertically() {
         this.clickMenu(this.menuItems.mergeVertically);
-    }, unmergeCells() {
+    }
+    ,
+    unmergeCells() {
         this.clickMenu(this.menuItems.unmerge);
-    },
-    //
-    // Scrolling
-    //
-    // In px. Measured on a mac with Chrome's zoom level at 100%.
+    }
+    ,
+//
+// Scrolling
+//
+// In px. Measured on a mac with Chrome's zoom level at 100%.
     rowHeight() {
         return 17;
-    },
-    // The approximate number of visible rows. It's probably possible to compute this precisely.
+    }
+    ,
+// The approximate number of visible rows. It's probably possible to compute this precisely.
     visibleRowCount() {
         return Math.ceil(document.querySelector(".grid-scrollable-wrapper").offsetHeight / this.rowHeight());
-    },
-    // NOTE(philc): It would be nice to improve these scrolling commands. They're somewhat slow and imprecise.
+    }
+    ,
+// NOTE(philc): It would be nice to improve these scrolling commands. They're somewhat slow and imprecise.
     scrollHalfPageDown() {
         var rowCount = Math.floor(this.visibleRowCount() / 2);
         for (let i = 0; i < rowCount; i++) {
             UI.typeKey(KeyboardUtils.keyCodes.downArrow)
         }
-    },
+    }
+    ,
     scrollHalfPageUp() {
         var rowCount = Math.floor(this.visibleRowCount() / 2);
         for (let i = 0; i < rowCount; i++) {
             UI.typeKey(KeyboardUtils.keyCodes.upArrow)
         }
-    },
+    }
+    ,
     scrollToTop() {
         // TODO(philc): This may not work on Linux or Windows since it uses the meta key. Replace with CTRL on
         // those platforms?
         UI.typeKey(KeyboardUtils.keyCodes.home, {meta: true});
-    },
+    }
+    ,
     scrollToBottom() {
         // End takes you to the bottom-right corner of the sheet, which doesn't mirror gg. So use Left afterwards.
         UI.typeKey(KeyboardUtils.keyCodes.end, {meta: true});
         UI.typeKey(KeyboardUtils.keyCodes.leftArrow, {meta: true});
-    },
-    //
-    // Tabs
-    //
+    }
+    ,
+//
+// Tabs
+//
     getTabEls() {
         return document.querySelectorAll(".docs-sheet-tab");
-    }, getActiveTabIndex() {
+    }
+    ,
+    getActiveTabIndex() {
         const iterable = this.getTabEls();
         for (let i = 0; i < iterable.length; i++) {
             const tab = iterable[i];
@@ -470,12 +515,16 @@ SheetActions = {
             }
         }
         return null;
-    },
+    }
+    ,
     moveTabRight() {
         this.clickTabButton("Move right");
-    }, moveTabLeft() {
+    }
+    ,
+    moveTabLeft() {
         this.clickTabButton("Move left");
-    },
+    }
+    ,
     prevTab() {
         const tabs = this.getTabEls();
         const prev = this.getActiveTabIndex() - 1;
@@ -483,7 +532,8 @@ SheetActions = {
             return;
         }
         KeyboardUtils.simulateClick(tabs[prev]);
-    },
+    }
+    ,
     nextTab() {
         const tabs = this.getTabEls();
         const next = this.getActiveTabIndex() + 1;
@@ -491,7 +541,8 @@ SheetActions = {
             return;
         }
         KeyboardUtils.simulateClick(tabs[next]);
-    },
+    }
+    ,
     clickTabButton(buttonCaption) {
         const menu = document.querySelector(".docs-sheet-tab-menu");
         // This tab menu element gets created the first time the user clicks on it, so it may not yet be available
@@ -512,9 +563,10 @@ SheetActions = {
             return;
         }
         KeyboardUtils.simulateClick(result);
-    },
-    // Shows and then hides a submenu in the File menu system. This triggers creation of the buttons in that
-    // submenu, so they can be clicked.
+    }
+    ,
+// Shows and then hides a submenu in the File menu system. This triggers creation of the buttons in that
+// submenu, so they can be clicked.
     activateMenu(menuCaption) {
         const menuButton = this.getMenuItem(menuCaption);
         KeyboardUtils.simulateClick(menuButton);
@@ -525,89 +577,124 @@ SheetActions = {
         // console.log('MENUS');
         // console.log('[29-06-2022-12:31:17 CEST] [sheet_actions.js][activateMenu] at line [549]', JSON.stringify({menus}, null, 2));
         for (const m of menus) m.style.display = "none";
-    },
-    // Shows and then hides the tab menu for the currently selected tab.
-    // This has the side effect of forcing Sheets to create the menu DOM element if it hasn't yet been created.
+    }
+    ,
+// Shows and then hides the tab menu for the currently selected tab.
+// This has the side effect of forcing Sheets to create the menu DOM element if it hasn't yet been created.
     activateTabMenu() {
         const menuButton = document.querySelector(".docs-sheet-active-tab .docs-icon-arrow-dropdown");
         // Show and then hide the tab menu.
         KeyboardUtils.simulateClick(menuButton);
         KeyboardUtils.simulateClick(menuButton);
-    },
-    //
-    // Formatting
-    //
-    // NOTE(philc): I couldn't reliably detect the selected font size for the current cell, and so I couldn't
-    // implement increaes font / decrease font commands.
-    // TODO(philc): I believe this is now possible. It's held in #docs-font-size.
+    }
+    ,
+//
+// Formatting
+//
+// NOTE(philc): I couldn't reliably detect the selected font size for the current cell, and so I couldn't
+// implement increaes font / decrease font commands.
+// TODO(philc): I believe this is now possible. It's held in #docs-font-size.
     getFontSizeMenu() {
         return this.getMenuItem("6").parentNode;
-    },
+    }
+    ,
     setFontSize10() {
         this.activateMenu(this.menuItems.fontSizeMenu);
         KeyboardUtils.simulateClick(this.getMenuItem(/^10$/));
-    },
+    }
+    ,
     setFontSize8() {
         this.activateMenu(this.menuItems.fontSizeMenu);
         KeyboardUtils.simulateClick(this.getMenuItem(/^8$/));
-    },
+    }
+    ,
     wrap() {
         this.clickToolbarButton(this.buttons.wrap);
-    }, overflow() {
+    }
+    ,
+    overflow() {
         this.clickToolbarButton(this.buttons.overflow);
-    }, clip() {
+    }
+    ,
+    clip() {
         this.clickToolbarButton(this.buttons.clip);
-    }, colorCellWhite() {
+    }
+    ,
+    colorCellWhite() {
         this.changeCellColor(this.colors.white);
-    }, colorCellLightYellow3() {
+    }
+    ,
+    colorCellLightYellow3() {
         this.changeCellColor(this.colors.lightYellow3);
-    }, colorCellLightCornflowerBlue3() {
+    }
+    ,
+    colorCellLightCornflowerBlue3() {
         this.changeCellColor(this.colors.lightCornflowBlue3);
-    }, colorCellLightPurple() {
+    }
+    ,
+    colorCellLightPurple() {
         this.changeCellColor(this.colors.lightPurple3);
-    }, colorCellLightRed3() {
+    }
+    ,
+    colorCellLightRed3() {
         this.changeCellColor(this.colors.lightRed3);
-    }, colorCellLightGray2() {
+    }
+    ,
+    colorCellLightGray2() {
         this.changeCellColor(this.colors.lightGray2);
-    },
+    }
+    ,
 
     freezeRow() {
         this.activateMenu("Freeze►");
         this.clickMenu(this.menuItems.freezeRow); // This forces the creation of the sub-menu items.
-    },
+    }
+    ,
 
     freezeColumn() {
         this.activateMenu("Freeze►");
         this.clickMenu(this.menuItems.freezeColumn); // This forces the creation of the sub-menu items.
-    },
+    }
+    ,
 
-    //
-    // Misc
-    //
+//
+// Misc
+//
 
     toggleFullScreen() {
         this.clickMenu(this.menuItems.fullScreen);
         // After entering full-screen mode, immediately dismiss the notification the Google Docs shows.
         // Note that the DOM element is only available a second after toggling fullscreen.
         setTimeout(() => this.dismissFullScreenNotificationMessage(), 250);
-    },
+    }
+    ,
 
     clickCloseButtonInDialog() {
         setTimeout(() => {
-            const closeButtonsInDialog = document.querySelectorAll('[role="dialog"] [aria-label="Close"]');
-            for (let button of closeButtonsInDialog) {
+            const closeButtonsInDialogWithAria = document.querySelectorAll('[role="dialog"][aria-label="Close"]');
+            for (let button of closeButtonsInDialogWithAria) {
+                KeyboardUtils.simulateClick(button);
+            }
+            // console.log('[02-07-2022-11:54:43 CEST] [sheet_actions.js][jsCtxNotFound] at line [680]',JSON.stringify({ closeButtonsInDialogWithAria }, null, 2));
+
+            const closeButtonWithTitle = document.querySelectorAll('[role="button"][title="Close"]');
+            // console.log('[02-07-2022-11:54:36 CEST] [sheet_actions.js][jsCtxNotFound] at line [682]',JSON.stringify({ closeButtonWithTitle }, null, 2));
+
+            for (let button of closeButtonWithTitle) {
                 KeyboardUtils.simulateClick(button);
             }
 
         }, 10)
-    },
+    }
+    ,
 
     clickApplyButton() {
         const applyButton = document.querySelector('[class="goog-inline-block jfk-button jfk-button-action nfd-apply"][role="button"]');
-        console.log('[29-06-2022-03:19:59 CEST] [sheet_actions.js][clickApplyButton] at line [701]', JSON.stringify({applyButton}, null, 2));
+        // console.log('[29-06-2022-03:19:59 CEST] [sheet_actions.js][clickApplyButton] at line [701]', JSON.stringify({applyButton}, null, 2));
 
         KeyboardUtils.simulateClick(applyButton);
-    },
+    }
+    ,
 
     dismissFullScreenNotificationMessage() {
         // There should only be one dismiss button, but just in case there's ever multiple, click on all of them.
@@ -615,14 +702,16 @@ SheetActions = {
         // notification that's not the fullscreen dismiss button.
         const dismissButtons = document.querySelectorAll(".docs-butterbar-dismiss");
         for (let button of dismissButtons) KeyboardUtils.simulateClick(button);
-    },
+    }
+    ,
 
-    // Returns the value of the current cell.
+// Returns the value of the current cell.
     getCellValue() {
         return document.querySelector("#t-formula-bar-input-container").textContent;
-    },
+    }
+    ,
 
-    // Opens a new tab using the current cell's value as the URL.
+// Opens a new tab using the current cell's value as the URL.
     openCellAsUrl() {
         let url = this.getCellValue().trim();
         // Some cells can contain a HYPERLINK("url", "caption") value. If so, assume that's the URL to open.
@@ -632,4 +721,5 @@ SheetActions = {
         }
         window.open(url, "_blank");
     }
-};
+}
+;

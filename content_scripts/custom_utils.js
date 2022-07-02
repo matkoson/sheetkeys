@@ -20,5 +20,18 @@ window.CustomUtils = {
         const optionEle = document.querySelector(`[aria-label="${alignTarget}"]`)
         KeyboardUtils.simulateClick(optionEle)
         that.unselectRow();
+    },
+    makeDel: that => delOptionTarget => {
+        that.activateMenu(that.menuItems.delete);
+        const optionEle = document.querySelector(`[aria-label="${delOptionTarget}"]`)
+        KeyboardUtils.simulateClick(optionEle)
+        that.unselectRow();
+    },
+    // css regex guide: https://developpaper.com/using-regular-expressions-in-css-selectors/
+    makeDelRegex: that => delOptionTarget => {
+        that.activateMenu(that.menuItems.delete);
+        const optionEle = document.querySelector(delOptionTarget)
+        KeyboardUtils.simulateClick(optionEle)
+        that.unselectRow();
     }
 }
