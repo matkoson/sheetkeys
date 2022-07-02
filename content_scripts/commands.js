@@ -67,8 +67,12 @@ Commands = {
         // insert cells
         insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
 
-        // CUSTOM -----------------------------------------------------------------------------------------------------
+        // Alignment
+        alignLeft: {fn: SheetActions.align().left.bind(SheetActions)},
+        alignCenter: {fn: SheetActions.align().center.bind(SheetActions)},
+        alignRight: {fn: SheetActions.align().right.bind(SheetActions)},
 
+        // CUSTOM -----------------------------------------------------------------------------------------------------
 
         // Selection
         enterVisualMode: {fn: UI.enterVisualMode.bind(UI)},
@@ -95,9 +99,6 @@ Commands = {
         wrap: {fn: SheetActions.wrap.bind(SheetActions)},
         overflow: {fn: SheetActions.overflow.bind(SheetActions)},
         clip: {fn: SheetActions.clip.bind(SheetActions)},
-        alignLeft: {fn: SheetActions.alignLeft.bind(SheetActions)},
-        alignCenter: {fn: SheetActions.alignCenter.bind(SheetActions)},
-        alignRight: {fn: SheetActions.alignRight.bind(SheetActions)},
         colorCellWhite: {fn: SheetActions.colorCellWhite.bind(SheetActions)},
         colorCellLightYellow3: {fn: SheetActions.colorCellLightYellow3.bind(SheetActions)},
         colorCellLightCornflowerBlue3: {fn: SheetActions.colorCellLightCornflowerBlue3.bind(SheetActions)},
@@ -191,13 +192,15 @@ Commands = {
             "J": "prevTab",
             "K": "nextTab",
 
-            // Formatting
+            // Wrapping
             ";,w,w": "wrap",
             ";,w,o": "overflow",
             ";,w,c": "clip",
+            // Alignment
             ";,a,l": "alignLeft",
             ";,a,c": "alignCenter",
             ";,a,r": "alignRight",
+            //
             ";,c,w": "colorCellWhite",
             ";,c,y": "colorCellLightYellow3",
             ";,c,b": "colorCellLightCornflowerBlue3",

@@ -13,7 +13,12 @@ window.CustomUtils = {
         )
 
 
+    },
+    makeAlign: that => alignTarget => {
+        that.activateMenu(that.menuItems.alignment);
+        // "Left l"/"Center c"/"Right r"
+        const optionEle = document.querySelector(`[aria-label="${alignTarget}"]`)
+        KeyboardUtils.simulateClick(optionEle)
+        that.unselectRow();
     }
-
-
 }

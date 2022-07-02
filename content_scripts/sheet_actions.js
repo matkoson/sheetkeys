@@ -1,9 +1,5 @@
 /**
  * TODO:
- * O. Wrapping functions: format => overflow/wrap/clip/
- * 0. Add 'del cell up' and 'del cell left' methods
- * 0. Add 'clear all stying' method
- * 0. Add 'border' methods
  * 1. 'clear formatting' method -  "Clear formatting⌘\\", menu item
  * 2. 'named ranges' method
  * 3. 'find and replace' method
@@ -11,7 +7,6 @@
  *         const selectorMenuItem = this.clickMenu("Zoom►");
  * 5. 'engineering' method (??)
  * 6. 'filtering' method (??)
- *
  */
 SheetActions = {
     // NOTE(philc): When developing, you can use this snippet to preview all available menu items:
@@ -32,6 +27,10 @@ SheetActions = {
         moveColumnLeft: /Columns? left/,
         moveColumnRight: /Columns? right/,
         paste: "Paste",
+        // Alignment
+        alignment: "Alignment►",
+        left: "Left l",
+        cells: "Cells►",
         pasteSpecial: "Paste special►",
         insertCells: "Insert cells►",
         formatOnly: "Format only",
@@ -46,16 +45,16 @@ SheetActions = {
         mergeVertically: "Merge vertically",
         unmerge: "Unmerge"
     },
-
     buttons: {
-        center: ["Horizontal align", "Center"],
-        clip: ["Text wrapping", "Clip"],
+        // Alignment
         left: ["Horizontal align", "Left"],
+        center: ["Horizontal align", "Center"],
         right: ["Horizontal align", "Right"],
+        // Wrapping
+        clip: ["Text wrapping", "Clip"],
         overflow: ["Text wrapping", "Overflow"],
         wrap: ["Text wrapping", "Wrap"]
     },
-
     // You can find the names of these color swatches by hovering over the swatches and seeing the tooltip.
     colors: {
         white: "white",
@@ -65,10 +64,8 @@ SheetActions = {
         lightRed3: "light red 3",
         lightGray2: "light gray 2"
     },
-
     // A mapping of button-caption to DOM element.
     menuItemElements: {},
-
     clickToolbarButton(captionList) {
         // Sometimes a toolbar button won't exist in the DOM until its parent has been clicked, so we click all of
         // its parents in sequence.
@@ -82,14 +79,20 @@ SheetActions = {
             KeyboardUtils.simulateClick(el);
         }
     },
-
     // Returns the DOM element of the menu item with the given caption. Prints a warning if a menu item isn't
     // found (since this is a common source of errors in SheetKeys) unless silenceWarning = true.
     getMenuItem(caption, silenceWarning) {
         if (silenceWarning == null) {
             silenceWarning = false;
         }
-        // const menuItemElements = this.menuItemElements;
+        // debug
+        const menuItemElements = this.menuItemElements;
+        const that = this;
+        console.log('[02-07-2022-09:07:16 CEST] [sheet_actions.js][getMenuItem] at line [89]', JSON.stringify({
+            menuItemElements,
+            caption,
+            that
+        }, null, 2));
         let item = this.menuItemElements[caption];
         if (item) {
             return item;
@@ -103,11 +106,10 @@ SheetActions = {
         }
         return this.menuItemElements[caption] = item;
     },
-
     findMenuItem(caption) {
         const menuItems = document.querySelectorAll(".goog-menuitem");
         // debug
-        /** const allAvailableMenuItems = Array.from(document.querySelectorAll(".goog-menuitem")).map((i) => i.innerText); */
+        const allAvailableMenuItems = Array.from(document.querySelectorAll(".goog-menuitem")).map((i) => i.innerText);
         // console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems.filter(el => el.includes("►")), null, 2))
 
         /** console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems, null, 2)) */
@@ -125,7 +127,6 @@ SheetActions = {
         }
         return null;
     },
-
     // Returns the color palette button corresponding to the given color name.
     // type: either "font" or "cell", depending on which color you want to change.
     // Note that the availability and use of the color palette buttons is a bit finicky.
@@ -152,17 +153,14 @@ SheetActions = {
 
         return colorButton;
     },
-
     changeFontColor(color) {
         KeyboardUtils.simulateClick(this.getColorButton(color, "font"));
     }, changeCellColor(color) {
         KeyboardUtils.simulateClick(this.getColorButton(color, "cell"));
     },
-
     clickMenu(itemCaption) {
         KeyboardUtils.simulateClick(this.getMenuItem(itemCaption));
     },
-
     deleteRowsOrColumns() {
         this.activateMenu("Delete►");
         if (UI.mode == "visualColumn") this.clickMenu(this.menuItems.deleteColumn); else this.clickMenu(this.menuItems.deleteRow);
@@ -170,18 +168,15 @@ SheetActions = {
         // Clear any row-level selections we might've had.
         this.unselectRow();
     },
-
     preserveSelectedColumn() {
         this.previousColumnLeft = this.selectedCellCoords().left;
     },
-
     restoreSelectedColumn() {
         const left = this.previousColumnLeft;
         const {top} = this.selectedCellCoords();
         const el = document.elementFromPoint(left, top);
         KeyboardUtils.simulateClick(el, left, top);
     },
-
     selectedCellCoords() {
         const box = document.querySelector(".active-cell-border").getBoundingClientRect();
         // Offset this box by > 0 so we don't select the borders around the selected cell.
@@ -189,7 +184,6 @@ SheetActions = {
         const margin = 5;
         return {top: box.top + margin, left: box.left + margin};
     },
-
     selectRow() {
         // Sheets allows you to type Shift+Space to select a row, but its behavior is buggy:
         // 1. Sometimes it doesn't select the whole row, so you need to type it twice.
@@ -205,7 +199,6 @@ SheetActions = {
         const rowMarginEl = document.elementFromPoint(xOffset, y);
         KeyboardUtils.simulateClick(rowMarginEl, xOffset, y);
     },
-
     selectColumn() {
         // Sheets allows you to type Alt+Space to select a column. Similar to `selectRow`, using that shortcut has
         // issues, so here we click on the appropriate column.
@@ -216,7 +209,6 @@ SheetActions = {
         const colMarginEl = document.elementFromPoint(activeCellLeft, yOffset);
         KeyboardUtils.simulateClick(colMarginEl, activeCellLeft, yOffset);
     },
-
     unselectRow() {
         const oldY = this.cellCursorY();
         // Typing any arrow key will unselect the current selection.
@@ -226,7 +218,6 @@ SheetActions = {
             UI.typeKey(KeyboardUtils.keyCodes.upArrow);
         }
     },
-
     cellCursorY() {
         // This is an approximate estimation of where the cell cursor is relative to the upper left corner of the
         // spreadsheet canvas.
@@ -235,7 +226,6 @@ SheetActions = {
         const selectionBox = document.querySelector(".autofill-cover");
         return selectionBox ? selectionBox.getBoundingClientRect().top : null;
     },
-
     //
     // Movement
     //
@@ -248,7 +238,6 @@ SheetActions = {
     }, moveRight() {
         UI.typeKey(KeyboardUtils.keyCodes.rightArrow);
     },
-
     moveDownAndSelect() {
         UI.typeKey(KeyboardUtils.keyCodes.downArrow, {shift: true});
     }, moveUpAndSelect() {
@@ -258,7 +247,6 @@ SheetActions = {
     }, moveRightAndSelect() {
         UI.typeKey(KeyboardUtils.keyCodes.rightArrow, {shift: true});
     },
-
     //
     // Row movement
     //
@@ -275,7 +263,6 @@ SheetActions = {
             this.restoreSelectedColumn();
         }
     },
-
     moveRowsDown() {
         if (UI.mode === "normal") {
             this.preserveSelectedColumn();
@@ -288,19 +275,16 @@ SheetActions = {
             this.restoreSelectedColumn();
         }
     },
-
     moveColumnsLeft() {
         this.selectColumn();
         this.activateMenu("Move►");
         this.clickMenu(this.menuItems.moveColumnLeft);
     },
-
     moveColumnsRight() {
         this.selectColumn();
         this.activateMenu("Move►");
         this.clickMenu(this.menuItems.moveColumnRight);
     },
-
     //
     // Editing
     //
@@ -309,51 +293,42 @@ SheetActions = {
     }, redo() {
         this.clickMenu(this.menuItems.redo);
     },
-
     clear() {
         this.activateMenu("Delete►");
         this.clickMenu(this.menuItems.deleteValues);
     },
-
     // Creates a row below and begins editing it.
     openRowBelow() {
         this.insertRowBelow();
         UI.typeKey(KeyboardUtils.keyCodes.enter);
     },
-
     openRowAbove() {
         this.insertRowAbove();
         UI.typeKey(KeyboardUtils.keyCodes.enter);
     },
-
     // Like openRowBelow, but does not enter insert mode.
     insertRowBelow() {
         this.activateMenu("Rows►");
         this.clickMenu(this.menuItems.rowBelow);
     },
-
     insertRowAbove() {
         this.activateMenu("Rows►");
         this.clickMenu(this.menuItems.rowAbove);
     },
-
     changeCell() {
         this.clear();
         UI.typeKey(KeyboardUtils.keyCodes.enter);
     },
-
     // Put the cursor at the beginning of the cell.
     editCell() {
         UI.typeKey(KeyboardUtils.keyCodes.enter);
         // Note that just typing the "home" key here doesn't work, for unknown reasons.
         this.moveCursorToCellStart();
     },
-
     editCellAppend() {
         // Note that appending to the cell's contents is the default behavior of the Enter key in Sheets.
         UI.typeKey(KeyboardUtils.keyCodes.enter);
     },
-
     moveCursorToCellStart() {
         // See http://stackoverflow.com/q/6249095/46237
         const selection = window.getSelection();
@@ -363,7 +338,6 @@ SheetActions = {
         selection.removeAllRanges();
         selection.addRange(range);
     },
-
     moveCursorToCellLineEnd() {
         // See https://stackoverflow.com/a/3866442
         const editorEl = document.getElementById("waffle-rich-text-editor");
@@ -374,31 +348,25 @@ SheetActions = {
         selection.removeAllRanges();
         selection.addRange(range);
     },
-
     commitCellChanges() {
         UI.typeKey(KeyboardUtils.keyCodes.enter);
         // "Enter" in Sheets moves your cursor to the cell below the one you're currently editing. Avoid that.
         UI.typeKey(KeyboardUtils.keyCodes.upArrow);
     },
-
     copyRow() {
         this.selectRow();
         this.clickMenu(this.menuItems.copy);
         this.unselectRow();
     },
-
     copy() {
         this.clickMenu(this.menuItems.copy);
         this.unselectRow();
     },
-
     paste() {
         this.clickMenu(this.menuItems.paste);
         this.unselectRow();
     },
-
     // CUSTOM -----------------------------------------------------------------------------------------------------
-
     pasteOnlyStyle() {
         this.activateMenu(this.menuItems.pasteSpecial);
         this.clickMenu(this.menuItems.formatOnly);
@@ -412,44 +380,38 @@ SheetActions = {
         this.clickMenu(this.menuItems.allWithoutBorder);
         this.unselectRow();
     },
+    // Format number to currency
     formatNumberToCurrency() {
         const that = this;
         const formatToCurrency = CustomUtils.makeFormatToCurrency(that);
-        const formatNumberToPln = () => formatToCurrency("Polish Zloty");
-        const formatNumberToEur = () => formatToCurrency("Euro");
-        const formatNumberToUsd = () => formatToCurrency("US Dollar");
-        const formatNumberToChf = () => formatToCurrency("Swiss Franc");
+        const toPln = () => formatToCurrency("Polish Zloty");
+        const toEur = () => formatToCurrency("Euro");
+        const toUsd = () => formatToCurrency("US Dollar");
+        const toChf = () => formatToCurrency("Swiss Franc");
 
         return {
-            formatNumberToPln, formatNumberToEur, formatNumberToUsd, formatNumberToChf
+            formatNumberToPln: toPln, formatNumberToEur: toEur, formatNumberToUsd: toUsd, formatNumberToChf: toChf
         }
     },
-    // format to currency, needs currency named from 'format => custom currency' menu
-    // formatNumberToPln() {
-    //     CustomUtils.formatToCurrency("Polish Zloty")
-    // }, formatNumberToEur() {
-    //     CustomUtils.formatToCurrency("Euro")
-    // }, formatNumberToUsd() {
-    //     CustomUtils.formatToCurrency("US Dollar");
-    // }, formatNumberToChf() {
-    //     CustomUtils.formatToCurrency("Swiss Franc");
-    // },
-
     // insert cells for selection
     insertCellsAboveShiftDown() {
-        console.log('at insertCellsAboveShiftDown');
-        // this.activateMenu(this.menuItems.insertCells);
-        // const selectorMenuItem = this.clickMenu("Zoom►");
-        const selectorMenuItem = this.clickMenu("Cells►");
-
-        console.log('selectorMenuItem', selectorMenuItem);
-
+        this.clickMenu(this.menuItems.cells);
         this.clickMenu(this.menuItems.andShiftDown);
         this.unselectRow();
     },
+    // Alignment
+    align() {
+        const that = this;
+        const formatToCurrency = CustomUtils.makeAlign(that);
+        const left = () => formatToCurrency("Left l");
+        const center = () => formatToCurrency("Centre c");
+        const right = () => formatToCurrency("Right r");
 
+        return {
+            left, center, right
+        }
+    },
     // CUSTOM -----------------------------------------------------------------------------------------------------
-
     // Merging cells
     mergeAllCells() {
         this.clickMenu(this.menuItems.mergeAll);
@@ -460,21 +422,17 @@ SheetActions = {
     }, unmergeCells() {
         this.clickMenu(this.menuItems.unmerge);
     },
-
     //
     // Scrolling
     //
-
     // In px. Measured on a mac with Chrome's zoom level at 100%.
     rowHeight() {
         return 17;
     },
-
     // The approximate number of visible rows. It's probably possible to compute this precisely.
     visibleRowCount() {
         return Math.ceil(document.querySelector(".grid-scrollable-wrapper").offsetHeight / this.rowHeight());
     },
-
     // NOTE(philc): It would be nice to improve these scrolling commands. They're somewhat slow and imprecise.
     scrollHalfPageDown() {
         var rowCount = Math.floor(this.visibleRowCount() / 2);
@@ -482,26 +440,22 @@ SheetActions = {
             UI.typeKey(KeyboardUtils.keyCodes.downArrow)
         }
     },
-
     scrollHalfPageUp() {
         var rowCount = Math.floor(this.visibleRowCount() / 2);
         for (let i = 0; i < rowCount; i++) {
             UI.typeKey(KeyboardUtils.keyCodes.upArrow)
         }
     },
-
     scrollToTop() {
         // TODO(philc): This may not work on Linux or Windows since it uses the meta key. Replace with CTRL on
         // those platforms?
         UI.typeKey(KeyboardUtils.keyCodes.home, {meta: true});
     },
-
     scrollToBottom() {
         // End takes you to the bottom-right corner of the sheet, which doesn't mirror gg. So use Left afterwards.
         UI.typeKey(KeyboardUtils.keyCodes.end, {meta: true});
         UI.typeKey(KeyboardUtils.keyCodes.leftArrow, {meta: true});
     },
-
     //
     // Tabs
     //
@@ -517,13 +471,11 @@ SheetActions = {
         }
         return null;
     },
-
     moveTabRight() {
         this.clickTabButton("Move right");
     }, moveTabLeft() {
         this.clickTabButton("Move left");
     },
-
     prevTab() {
         const tabs = this.getTabEls();
         const prev = this.getActiveTabIndex() - 1;
@@ -532,7 +484,6 @@ SheetActions = {
         }
         KeyboardUtils.simulateClick(tabs[prev]);
     },
-
     nextTab() {
         const tabs = this.getTabEls();
         const next = this.getActiveTabIndex() + 1;
@@ -541,7 +492,6 @@ SheetActions = {
         }
         KeyboardUtils.simulateClick(tabs[next]);
     },
-
     clickTabButton(buttonCaption) {
         const menu = document.querySelector(".docs-sheet-tab-menu");
         // This tab menu element gets created the first time the user clicks on it, so it may not yet be available
@@ -563,7 +513,6 @@ SheetActions = {
         }
         KeyboardUtils.simulateClick(result);
     },
-
     // Shows and then hides a submenu in the File menu system. This triggers creation of the buttons in that
     // submenu, so they can be clicked.
     activateMenu(menuCaption) {
@@ -573,11 +522,10 @@ SheetActions = {
         // It's not possible to identify and find the specific submenu DOM element that was created and shown as a
         // result of clicking on the menuButton, so we brute force hide all menus.
         const menus = Array.from(document.querySelectorAll(".goog-menu"));
-        /** console.log('MENUS'); */
-        /** console.log('[29-06-2022-12:31:17 CEST] [sheet_actions.js][activateMenu] at line [549]', JSON.stringify({menus}, null, 2)); */
+        // console.log('MENUS');
+        // console.log('[29-06-2022-12:31:17 CEST] [sheet_actions.js][activateMenu] at line [549]', JSON.stringify({menus}, null, 2));
         for (const m of menus) m.style.display = "none";
     },
-
     // Shows and then hides the tab menu for the currently selected tab.
     // This has the side effect of forcing Sheets to create the menu DOM element if it hasn't yet been created.
     activateTabMenu() {
@@ -586,40 +534,29 @@ SheetActions = {
         KeyboardUtils.simulateClick(menuButton);
         KeyboardUtils.simulateClick(menuButton);
     },
-
     //
     // Formatting
     //
-
     // NOTE(philc): I couldn't reliably detect the selected font size for the current cell, and so I couldn't
     // implement increaes font / decrease font commands.
     // TODO(philc): I believe this is now possible. It's held in #docs-font-size.
     getFontSizeMenu() {
         return this.getMenuItem("6").parentNode;
     },
-
     setFontSize10() {
         this.activateMenu(this.menuItems.fontSizeMenu);
         KeyboardUtils.simulateClick(this.getMenuItem(/^10$/));
     },
-
     setFontSize8() {
         this.activateMenu(this.menuItems.fontSizeMenu);
         KeyboardUtils.simulateClick(this.getMenuItem(/^8$/));
     },
-
     wrap() {
         this.clickToolbarButton(this.buttons.wrap);
     }, overflow() {
         this.clickToolbarButton(this.buttons.overflow);
     }, clip() {
         this.clickToolbarButton(this.buttons.clip);
-    }, alignLeft() {
-        this.clickToolbarButton(this.buttons.left);
-    }, alignCenter() {
-        this.clickToolbarButton(this.buttons.center);
-    }, alignRight() {
-        this.clickToolbarButton(this.buttons.right);
     }, colorCellWhite() {
         this.changeCellColor(this.colors.white);
     }, colorCellLightYellow3() {
