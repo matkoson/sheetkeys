@@ -34,4 +34,20 @@ window.CustomUtils = {
         KeyboardUtils.simulateClick(optionEle)
         that.unselectRow();
     }
+    ,
+    pressMainMenuItem: menuItemName => {
+        const allMenuItems = Array.from(document.querySelectorAll('[role="menuitem"][class="menu-button goog-control goog-inline-block"]'))
+        try {
+            const menuItem = allMenuItems.filter(el => el.textContent.toLowerCase().includes(menuItemName.toLowerCase()))[0];
+            KeyboardUtils.simulateClick(menuItem)
+
+        } catch (e) {
+            console.error(e)
+        }
+    },
+    pressDomElement: selector => {
+        const ele = document.querySelector(selector)
+        setTimeout(() => KeyboardUtils.simulateClick(ele)
+            , 100)
+    }
 }

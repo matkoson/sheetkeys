@@ -1,3 +1,126 @@
+const custom = {
+    // border
+    ";,b,c": "borderClear",
+    ";,b,a": "borderAll",
+    ";,b,i": "borderInner",
+    ";,b,h": "borderHorizontal",
+    ";,b,v": "borderVertical",
+    ";,b,o": "borderOuter",
+    ";,b,l": "borderLeft",
+    ";,b,t": "borderTop",
+    ";,b,r": "borderRight",
+    ";,b,b": "borderBottom",
+
+    // Paste special
+    "s": "pasteOnlyStyle",
+    "w": "pasteOnlyWidth",
+    "n,b": "pasteAllWithoutBorder",
+
+    // Format number to currency
+    ";,p,l": "formatNumberToPln",
+    ";,e,u": "formatNumberToEur",
+    ";,u,s": "formatNumberToUsd",
+    ";,c,h": "formatNumberToChf",
+
+    // Delete values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes
+    "x": "deleteValues",
+    ";,x,r": "deleteRow",
+    ";,x,c": "deleteColumn",
+    ";,x,u": "deleteCellsAndShiftUp",
+    ";,x,l": "deleteCellsAndShiftLeft",
+    ";,x,n": "deleteNotes",
+    ";,x,f": "deleteFormatting",
+
+    // Insert cells
+    "<C-o>": "insertCellsAboveShiftDown",
+
+    // Get named ranges
+    ";,n,r": "getNamedRanges",
+
+    // Close popup or dialog
+    ";,z,e": "closePopupDialog",
+
+    // Alignment
+    ";,a,l": "alignLeft",
+    ";,a,c": "alignCenter",
+    ";,a,r": "alignRight",
+
+    // Wrapping
+    ";,w,w": "wrap",
+    ";,w,o": "overflow",
+    ";,w,c": "clip",
+
+    // Change sheet
+    "<C-k>": "nextSheet",
+    "<C-j>": "previousSheet",
+    ";,v,v": "addSheet",
+}
+const customBindings = {
+    // border
+    borderClear: {fn: SheetActions.borders().clear.bind(SheetActions)},
+    borderAll: {fn: SheetActions.borders().all.bind(SheetActions)},
+    borderInner: {fn: SheetActions.borders().inner.bind(SheetActions)},
+    borderHorizontal: {fn: SheetActions.borders().horizontal.bind(SheetActions)},
+    borderVertical: {fn: SheetActions.borders().vertical.bind(SheetActions)},
+    borderOuter: {fn: SheetActions.borders().outer.bind(SheetActions)},
+    borderLeft: {fn: SheetActions.borders().left.bind(SheetActions)},
+    borderTop: {fn: SheetActions.borders().top.bind(SheetActions)},
+    borderRight: {fn: SheetActions.borders().right.bind(SheetActions)},
+    borderBottom: {fn: SheetActions.borders().bottom.bind(SheetActions)},
+
+    // Paste special
+    pasteOnlyStyle: {fn: SheetActions.pasteOnlyStyle.bind(SheetActions)},
+    pasteOnlyWidth: {fn: SheetActions.pasteOnlyWidth.bind(SheetActions)},
+    pasteAllWithoutBorder: {
+        fn: SheetActions.pasteAllWithoutBorder.bind(SheetActions)
+    },
+
+    // Format number to currency
+    formatNumberToPln: {
+        fn: SheetActions.formatNumberToCurrency().formatNumberToPln.bind(SheetActions)
+    },
+    formatNumberToEur: {
+        fn: SheetActions.formatNumberToCurrency().formatNumberToEur.bind(SheetActions)
+    },
+    formatNumberToUsd: {
+        fn: SheetActions.formatNumberToCurrency().formatNumberToUsd.bind(SheetActions)
+    },
+    formatNumberToChf: {
+        fn: SheetActions.formatNumberToCurrency().formatNumberToChf.bind(SheetActions)
+    },
+
+    // Delete values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes
+    deleteValues: {fn: SheetActions.delete().values.bind(SheetActions)},
+    deleteRow: {fn: SheetActions.delete().row.bind(SheetActions)},
+    deleteColumn: {fn: SheetActions.delete().column.bind(SheetActions)},
+    deleteCellsAndShiftUp: {fn: SheetActions.delete().cellsAndShiftUp.bind(SheetActions)},
+    deleteCellsAndShiftLeft: {fn: SheetActions.delete().cellsAndShiftLeft.bind(SheetActions)},
+    deleteNotes: {fn: SheetActions.delete().notes.bind(SheetActions)},
+    deleteFormatting: {fn: SheetActions.delete().formatting.bind(SheetActions)},
+
+    // Insert cells
+    insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
+
+    // Get named ranges
+    getNamedRanges: {fn: SheetActions.getNamedRanges.bind(SheetActions)},
+
+    // Close popup or dialog
+    closePopupDialog: {fn: SheetActions.closePopupDialog.bind(SheetActions)},
+
+    // Alignment
+    alignLeft: {fn: SheetActions.align().left.bind(SheetActions)},
+    alignCenter: {fn: SheetActions.align().center.bind(SheetActions)},
+    alignRight: {fn: SheetActions.align().right.bind(SheetActions)},
+
+    // Change sheet
+    // Next sheet
+    nextSheet: {fn: SheetActions.nextSheet.bind(SheetActions)},
+    // Previous sheet
+    previousSheet: {fn: SheetActions.previousSheet.bind(SheetActions)},
+    // Add sheet
+    addSheet: {fn: SheetActions.addSheet.bind(SheetActions)},
+}
+
 Commands = {
     commands: {
         // Cursor movement
@@ -41,66 +164,6 @@ Commands = {
         paste: {fn: SheetActions.paste.bind(SheetActions)},
 
 
-        // CUSTOM -----------------------------------------------------------------------------------------------------
-
-        // Paste special
-        pasteOnlyStyle: {fn: SheetActions.pasteOnlyStyle.bind(SheetActions)},
-        pasteOnlyWidth: {fn: SheetActions.pasteOnlyWidth.bind(SheetActions)},
-        pasteAllWithoutBorder: {
-            fn: SheetActions.pasteAllWithoutBorder.bind(SheetActions)
-        },
-
-        // Format number to currency
-        formatNumberToPln: {
-            fn: SheetActions.formatNumberToCurrency().formatNumberToPln.bind(SheetActions)
-        },
-        formatNumberToEur: {
-            fn: SheetActions.formatNumberToCurrency().formatNumberToEur.bind(SheetActions)
-        },
-        formatNumberToUsd: {
-            fn: SheetActions.formatNumberToCurrency().formatNumberToUsd.bind(SheetActions)
-        },
-        formatNumberToChf: {
-            fn: SheetActions.formatNumberToCurrency().formatNumberToChf.bind(SheetActions)
-        },
-
-        // insert cells
-        insertCellsAboveShiftDown: {fn: SheetActions.insertCellsAboveShiftDown.bind(SheetActions)},
-
-        // Alignment
-        alignLeft: {fn: SheetActions.align().left.bind(SheetActions)},
-        alignCenter: {fn: SheetActions.align().center.bind(SheetActions)},
-        alignRight: {fn: SheetActions.align().right.bind(SheetActions)},
-
-        // Delete values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes
-        deleteValues: {fn: SheetActions.delete().values.bind(SheetActions)},
-        deleteRow: {fn: SheetActions.delete().row.bind(SheetActions)},
-        deleteColumn: {fn: SheetActions.delete().column.bind(SheetActions)},
-        deleteCellsAndShiftUp: {fn: SheetActions.delete().cellsAndShiftUp.bind(SheetActions)},
-        deleteCellsAndShiftLeft: {fn: SheetActions.delete().cellsAndShiftLeft.bind(SheetActions)},
-        deleteNotes: {fn: SheetActions.delete().notes.bind(SheetActions)},
-        deleteFormatting: {fn: SheetActions.delete().formatting.bind(SheetActions)},
-
-        // border
-        borderClear: {fn: SheetActions.borders().clear.bind(SheetActions)},
-        borderAll: {fn: SheetActions.borders().all.bind(SheetActions)},
-        borderInner: {fn: SheetActions.borders().inner.bind(SheetActions)},
-        borderHorizontal: {fn: SheetActions.borders().horizontal.bind(SheetActions)},
-        borderVertical: {fn: SheetActions.borders().vertical.bind(SheetActions)},
-        borderOuter: {fn: SheetActions.borders().outer.bind(SheetActions)},
-        borderLeft: {fn: SheetActions.borders().left.bind(SheetActions)},
-        borderTop: {fn: SheetActions.borders().top.bind(SheetActions)},
-        borderRight: {fn: SheetActions.borders().right.bind(SheetActions)},
-        borderBottom: {fn: SheetActions.borders().bottom.bind(SheetActions)},
-
-        // get named ranges
-        getNamedRanges: {fn: SheetActions.getNamedRanges.bind(SheetActions)},
-
-        // close popup or dialog
-        closePopupDialog: {fn: SheetActions.closePopupDialog.bind(SheetActions)},
-
-        // CUSTOM -----------------------------------------------------------------------------------------------------
-
         // Selection
         enterVisualMode: {fn: UI.enterVisualMode.bind(UI)},
         enterVisualLineMode: {fn: UI.enterVisualLineMode.bind(UI)},
@@ -141,9 +204,20 @@ Commands = {
         toggleFullScreen: {fn: SheetActions.toggleFullScreen.bind(SheetActions)},
         openCellAsUrl: {fn: SheetActions.openCellAsUrl.bind(SheetActions),},
         reloadPage: {fn: UI.reloadPage.bind(UI)},
+        // CUSTOM ------------------------------------------------------------------------------------------------------
+        ...customBindings
     },
-
     defaultMappings: {
+        "insert": {
+            // In normal Sheets, esc takes you out of the cell and loses your edits. That's a poor experience for
+            // people used to Vim. Now ESC will save your cell edits and put you back in normal mode.
+            "esc": "commitCellChanges",
+            // In form fields on Mac, C-e takes you to the end of the field. For some reason C-e doesn't work in
+            // Sheets. Here, we fix that.
+            "<C-e>": "moveCursorToCellLineEnd",
+            "<C-c>": "exitMode",
+            "<M-r>": "reloadPage"
+        },
         "normal": {
             // Cursor movement
             "k": "moveUp",
@@ -182,50 +256,6 @@ Commands = {
             "y,c": "copy",
             "p": "paste",
 
-            // border
-            ";,b,c": "borderClear",
-            ";,b,a": "borderAll",
-            ";,b,i": "borderInner",
-            ";,b,h": "borderHorizontal",
-            ";,b,v": "borderVertical",
-            ";,b,o": "borderOuter",
-            ";,b,l": "borderLeft",
-            ";,b,t": "borderTop",
-            ";,b,r": "borderRight",
-            ";,b,b": "borderBottom",
-
-            // CUSTOM -----------------------------------------------------------------------------------------------------
-
-            // Paste special
-            "s": "pasteOnlyStyle",
-            "w": "pasteOnlyWidth",
-            "n,b": "pasteAllWithoutBorder",
-
-            // Format number to currency
-            ";,p,l": "formatNumberToPln",
-            ";,e,u": "formatNumberToEur",
-            ";,u,s": "formatNumberToUsd",
-            ";,c,h": "formatNumberToChf"
-            ,
-
-            // Delete cells
-            "x": "deleteValues",
-            ";,x,r": "deleteRow",
-            ";,x,c": "deleteColumn",
-            ";,x,u": "deleteCellsAndShiftUp",
-            ";,x,l": "deleteCellsAndShiftLeft",
-            ";,x,n": "deleteNotes",
-            ";,x,f": "deleteFormatting",
-
-            // add cells
-            "<C-o>": "insertCellsAboveShiftDown",
-
-            // Get named ranges
-            ";,n,r": "getNamedRanges",
-            // close popup or dialog
-            ";,z,e": "closePopupDialog",
-            // CUSTOM -----------------------------------------------------------------------------------------------------
-
             // Selection
             "v": "enterVisualMode",
             "V": "enterVisualLineMode",
@@ -245,15 +275,6 @@ Commands = {
             "J": "prevTab",
             "K": "nextTab",
 
-            // Wrapping
-            ";,w,w": "wrap",
-            ";,w,o": "overflow",
-            ";,w,c": "clip",
-            // Alignment
-            ";,a,l": "alignLeft",
-            ";,a,c": "alignCenter",
-            ";,a,r": "alignRight",
-            //
             ";,c,w": "colorCellWhite",
             ";,c,y": "colorCellLightYellow3",
             ";,c,b": "colorCellLightCornflowerBlue3",
@@ -275,17 +296,8 @@ Commands = {
             // happen. If you mistakenly type it in Sheets, you will exit full screen mode.
             "esc": "exitMode",
             ";,w": "commitCellChanges",
-        },
-
-        "insert": {
-            // In normal Sheets, esc takes you out of the cell and loses your edits. That's a poor experience for
-            // people used to Vim. Now ESC will save your cell edits and put you back in normal mode.
-            "esc": "commitCellChanges",
-            // In form fields on Mac, C-e takes you to the end of the field. For some reason C-e doesn't work in
-            // Sheets. Here, we fix that.
-            "<C-e>": "moveCursorToCellLineEnd",
-            "<C-c>": "exitMode",
-            "<M-r>": "reloadPage"
+            // CUSTOM --------------------------------------------------------------------------------------------
+            ...custom
         }
     }
 };

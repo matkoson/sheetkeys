@@ -8,7 +8,203 @@
  * 5. 'engineering' method (??)
  * 6. 'filtering' method (??)
  */
+const customFactories = {
+    // Format number to currency
+    formatNumberToCurrency() {
+        const that = this;
+        const formatToCurrency = CustomUtils.makeFormatToCurrency(that);
+        const toPln = () => formatToCurrency("Polish Zloty");
+        const toEur = () => formatToCurrency("Euro");
+        const toUsd = () => formatToCurrency("US Dollar");
+        const toChf = () => formatToCurrency("Swiss Franc");
+
+        return {
+            formatNumberToPln: toPln, formatNumberToEur: toEur, formatNumberToUsd: toUsd, formatNumberToChf: toChf
+        }
+    },
+    // Alignment
+    align() {
+        const that = this;
+        const formatToCurrency = CustomUtils.makeAlign(that);
+        const left = () => formatToCurrency("Left l");
+        const center = () => formatToCurrency("Centre c");
+        const right = () => formatToCurrency("Right r");
+
+        return {
+            left, center, right
+        }
+    },
+    // Delete cells
+    delete() {
+        const that = this;
+        const del = CustomUtils.makeDel(that);
+        const delRegex = CustomUtils.makeDelRegex(that);
+
+        const values = () => del("Values v");
+        const row = () => delRegex('[aria-label^="Row "][aria-label$=" d"]');
+        const column = () => delRegex('[aria-label^="Column "][aria-label$=" e"]');
+        const cellsAndShiftUp = () => del("Cells and shift up y");
+        const cellsAndShiftLeft = () => del("Cells and shift left z");
+        const notes = () => del("Notes l");
+        const formatting = () => {
+            this.activateMenu("Clear formatting⌘\\");
+        }
+
+        return {
+            values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes, formatting
+        }
+    },
+    borders() {
+        const _forceHideAllMenus = () => {
+            const menus = Array.from(document.querySelectorAll(".goog-menu"));
+            for (const m of menus) m.style.display = "none";
+        }
+
+        const _pressBordersIcon = () => {
+            setTimeout(() => this.closePopupDialog(), 10
+            )
+            const bordersIcon = document.querySelector("[data-tooltip='Borders']");
+            KeyboardUtils.simulateClick(bordersIcon)
+        }
+        // clear borders
+        const clear = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Clear borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+
+        // all borders
+        const all = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='All borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // inner borders
+        const inner = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Inner borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // horizontal borders
+        const horizontal = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Horizontal borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // vertical
+        const vertical = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Vertical borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // outer borders
+        const outer = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Outer borders']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // left border
+        const left = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Left border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // top border
+        const top = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Top border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // right border
+        const right = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Right border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+        // bottom border
+        const bottom = () => {
+            _pressBordersIcon();
+            const borderOptionIcon = document.querySelector("[data-tooltip='Bottom border']");
+            KeyboardUtils.simulateClick(borderOptionIcon)
+            _forceHideAllMenus();
+        }
+
+        return {
+            clear, all, inner, horizontal, vertical, outer, left, top, right, bottom
+        }
+    },
+};
+const customActions = {
+    // FACTORY -----------------------------------------------------------------------------------------------------
+    ...customFactories,
+    // pasting
+    pasteOnlyStyle() {
+        this.activateMenu(this.menuItems.pasteSpecial);
+        this.clickMenu(this.menuItems.formatOnly);
+        this.unselectRow();
+    }, pasteOnlyWidth() {
+        this.activateMenu(this.menuItems.pasteSpecial);
+        this.clickMenu(this.menuItems.widthOnly);
+        this.unselectRow();
+    }, pasteAllWithoutBorder() {
+        this.activateMenu(this.menuItems.pasteSpecial);
+        this.clickMenu(this.menuItems.allWithoutBorder);
+        this.unselectRow();
+    },
+    // insert cells for selection
+    insertCellsAboveShiftDown() {
+        this.clickMenu(this.menuItems.cells);
+        this.clickMenu(this.menuItems.andShiftDown);
+        this.unselectRow();
+    },
+    getNamedRanges() {
+        this.activateMenu("Named ranges");
+    }
+    ,
+    closePopupDialog() {
+        this.clickCloseButtonInDialog()
+    },
+    // Change sheet
+    nextSheet() {
+        const allSheetTabs = Array.from(document.querySelectorAll('[class*="docs-sheet-tab docs-material"]'));
+        const numberOfSheetTabs = allSheetTabs.length;
+        const activeSheetTabIndex = allSheetTabs.findIndex(domEle => domEle.className.includes("docs-sheet-active-tab"));
+        const nextSheetTabIndex = (activeSheetTabIndex + 1) % numberOfSheetTabs;
+
+        KeyboardUtils.simulateClick(allSheetTabs[nextSheetTabIndex]);
+    },
+    previousSheet() {
+        const allSheetTabs = Array.from(document.querySelectorAll('[class*="docs-sheet-tab docs-material"]'));
+        const numberOfSheetTabs = allSheetTabs.length;
+        const activeSheetTabIndex = allSheetTabs.findIndex(domEle => domEle.className.includes("docs-sheet-active-tab"));
+        const previousSheetTabIndex = (activeSheetTabIndex - 1 + numberOfSheetTabs) % numberOfSheetTabs;
+
+        KeyboardUtils.simulateClick(allSheetTabs[previousSheetTabIndex]);
+    },
+    addSheet() {
+        const {pressMainMenuItem, pressDomElement} = CustomUtils;
+
+        // Press Insert menu
+        pressMainMenuItem("Insert");
+        // Press Insert => Sheet
+        pressDomElement('[role="menuitem"][id=":4z"]')
+        // For some reason, only double-click doses the job
+        pressDomElement('[role="menuitem"][id=":4z"]')
+    }
+}
+
 SheetActions = {
+    // CUSTOM -----------------------------------------------------------------------------------------------------
+    ...customActions,
     // NOTE(philc): When developing, you can use this snippet to preview all available menu items:
     // Array.from(document.querySelectorAll(".goog-menuitem")).forEach((i) => console.log(i.innerText))
     menuItems: {
@@ -111,7 +307,7 @@ SheetActions = {
         const menuItems = document.querySelectorAll(".goog-menuitem");
         // debug
         const allAvailableMenuItems = Array.from(document.querySelectorAll(".goog-menuitem")).map((i) => i.innerText);
-        // console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems.filter(el => el.includes("►")), null, 2))
+        console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems.filter(el => el.includes("►")), null, 2))
 
         console.log('allAvailableMenuItems', JSON.stringify(allAvailableMenuItems, null, 2));
 
@@ -367,169 +563,6 @@ SheetActions = {
         this.clickMenu(this.menuItems.paste);
         this.unselectRow();
     },
-    // CUSTOM -----------------------------------------------------------------------------------------------------
-    // pasting
-    pasteOnlyStyle() {
-        this.activateMenu(this.menuItems.pasteSpecial);
-        this.clickMenu(this.menuItems.formatOnly);
-        this.unselectRow();
-    }, pasteOnlyWidth() {
-        this.activateMenu(this.menuItems.pasteSpecial);
-        this.clickMenu(this.menuItems.widthOnly);
-        this.unselectRow();
-    }, pasteAllWithoutBorder() {
-        this.activateMenu(this.menuItems.pasteSpecial);
-        this.clickMenu(this.menuItems.allWithoutBorder);
-        this.unselectRow();
-    },
-    // insert cells for selection
-    insertCellsAboveShiftDown() {
-        this.clickMenu(this.menuItems.cells);
-        this.clickMenu(this.menuItems.andShiftDown);
-        this.unselectRow();
-    },
-    // FACTORY -----------------------------------------------------------------------------------------------------
-    // Format number to currency
-    formatNumberToCurrency() {
-        const that = this;
-        const formatToCurrency = CustomUtils.makeFormatToCurrency(that);
-        const toPln = () => formatToCurrency("Polish Zloty");
-        const toEur = () => formatToCurrency("Euro");
-        const toUsd = () => formatToCurrency("US Dollar");
-        const toChf = () => formatToCurrency("Swiss Franc");
-
-        return {
-            formatNumberToPln: toPln, formatNumberToEur: toEur, formatNumberToUsd: toUsd, formatNumberToChf: toChf
-        }
-    },
-    // Alignment
-    align() {
-        const that = this;
-        const formatToCurrency = CustomUtils.makeAlign(that);
-        const left = () => formatToCurrency("Left l");
-        const center = () => formatToCurrency("Centre c");
-        const right = () => formatToCurrency("Right r");
-
-        return {
-            left, center, right
-        }
-    },
-    // Delete cells
-    delete() {
-        const that = this;
-        const del = CustomUtils.makeDel(that);
-        const delRegex = CustomUtils.makeDelRegex(that);
-
-        const values = () => del("Values v");
-        const row = () => delRegex('[aria-label^="Row "][aria-label$=" d"]');
-        const column = () => delRegex('[aria-label^="Column "][aria-label$=" e"]');
-        const cellsAndShiftUp = () => del("Cells and shift up y");
-        const cellsAndShiftLeft = () => del("Cells and shift left z");
-        const notes = () => del("Notes l");
-        const formatting = () => {
-            this.activateMenu("Clear formatting⌘\\");
-        }
-
-        return {
-            values, row, column, cellsAndShiftUp, cellsAndShiftLeft, notes, formatting
-        }
-    },
-    borders() {
-        const _forceHideAllMenus = () => {
-            const menus = Array.from(document.querySelectorAll(".goog-menu"));
-            for (const m of menus) m.style.display = "none";
-        }
-
-        const _pressBordersIcon = () => {
-            setTimeout(() => this.closePopupDialog(), 10
-            )
-            const bordersIcon = document.querySelector("[data-tooltip='Borders']");
-            KeyboardUtils.simulateClick(bordersIcon)
-        }
-        // clear borders
-        const clear = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Clear borders']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-
-        // all borders
-        const all = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='All borders']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // inner borders
-        const inner = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Inner borders']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // horizontal borders
-        const horizontal = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Horizontal borders']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // vertical
-        const vertical = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Vertical borders']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // outer borders
-        const outer = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Outer borders']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // left border
-        const left = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Left border']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // top border
-        const top = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Top border']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // right border
-        const right = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Right border']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-        // bottom border
-        const bottom = () => {
-            _pressBordersIcon();
-            const borderOptionIcon = document.querySelector("[data-tooltip='Bottom border']");
-            KeyboardUtils.simulateClick(borderOptionIcon)
-            _forceHideAllMenus();
-        }
-
-        return {
-            clear, all, inner, horizontal, vertical, outer, left, top, right, bottom
-        }
-    },
-    getNamedRanges() {
-        this.activateMenu("Named ranges");
-    }
-    ,
-    closePopupDialog() {
-        this.clickCloseButtonInDialog()
-    },
-// CUSTOM -----------------------------------------------------------------------------------------------------
 // Merging cells
     mergeAllCells() {
         this.clickMenu(this.menuItems.mergeAll);
